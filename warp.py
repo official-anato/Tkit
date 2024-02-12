@@ -73,3 +73,102 @@ class App:
             self.app.widgets[id] = checkbox
             self.app.widgets[f"{id}_var"] = var
             return id
+
+        def canvas(self, width=200, height=100, id=None, **options):
+            if id is None:
+                id = self._generate_id('CN')
+            canvas = tk.Canvas(self.app.root, width=width, height=height, **options)
+            canvas.pack()
+            self.app.widgets[id] = canvas
+            return id
+
+        def frame(self, id=None, **options):
+            if id is None:
+                id = self._generate_id('F')
+            frame = tk.Frame(self.app.root, **options)
+            frame.pack()
+            self.app.widgets[id] = frame
+            return id
+
+        def listbox(self, id=None, **options):
+            if id is None:
+                id = self._generate_id('LB')
+            listbox = tk.Listbox(self.app.root, **options)
+            listbox.pack()
+            self.app.widgets[id] = listbox
+            return id
+
+        def menubutton(self, text="Untitled Menubutton", id=None, **options):
+            if id is None:
+                id = self._generate_id('MB')
+            menubutton = tk.Menubutton(self.app.root, text=text, **options)
+            menubutton.pack()
+            self.app.widgets[id] = menubutton
+            return id
+
+        def message(self, text="Untitled Message", id=None, **options):
+            if id is None:
+                id = self._generate_id('MSG')
+            message = tk.Message(self.app.root, text=text, **options)
+            message.pack()
+            self.app.widgets[id] = message
+            return id
+
+        def radiobutton(self, text="Untitled Radiobutton", id=None, **options):
+            if id is None:
+                id = self._generate_id('RB')
+            var = tk.IntVar(self.app.root)
+            radiobutton = tk.Radiobutton(self.app.root, text=text, variable=var, **options)
+            radiobutton.pack()
+            self.app.widgets[id] = radiobutton
+            self.app.widgets[f"{id}_var"] = var
+            return id
+
+        def scale(self, id=None, **options):
+            if id is None:
+                id = self._generate_id('S')
+            scale = tk.Scale(self.app.root, **options)
+            scale.pack()
+            self.app.widgets[id] = scale
+            return id
+
+        def scrollbar(self, id=None, **options):
+            if id is None:
+                id = self._generate_id('SC')
+            scrollbar = tk.Scrollbar(self.app.root, **options)
+            scrollbar.pack()
+            self.app.widgets[id] = scrollbar
+            return id
+
+        def spinbox(self, id=None, **options):
+            if id is None:
+                id = self._generate_id('SB')
+            spinbox = tk.Spinbox(self.app.root, **options)
+            spinbox.pack()
+            self.app.widgets[id] = spinbox
+            return id
+
+        def text(self, id=None, **options):
+            if id is None:
+                id = self._generate_id('T')
+            text_widget = tk.Text(self.app.root, **options)
+            text_widget.pack()
+            self.app.widgets[id] = text_widget
+            return id
+
+        def toplevel(self, title="Untitled Toplevel", id=None, **options):
+            if id is None:
+                id = self._generate_id('TL')
+            toplevel = tk.Toplevel(self.app.root, **options)
+            toplevel.title(title)
+            self.app.widgets[id] = toplevel
+            return id
+
+        # Note: Treeview is part of the ttk module
+        def treeview(self, id=None, **options):
+            if id is None:
+                id = self._generate_id('TV')
+            treeview = ttk.Treeview(self.app.root, **options)
+            treeview.pack()
+            self.app.widgets[id] = treeview
+            return id
