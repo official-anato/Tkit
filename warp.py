@@ -11,7 +11,7 @@ class App:
         self.widget_counters = defaultdict(int)  # Default dictionary to store widget count
         self.create = self.Create(self)
 
-    def get_id_list():
+    def get_id_list(self):
         return self.widgets
 
     class Create:
