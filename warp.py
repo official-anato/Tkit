@@ -11,8 +11,14 @@ class App:
         self.widget_counters = defaultdict(int)  # Default dictionary to store widget count
         self.create = self.Create(self)
 
-    def get_id_list(self):
+    def getwidlist(self):
         return self.widgets
+
+    def getwid(self, id):
+        return self.widgets.get(id)
+
+    def run(self):
+        self.root.mainloop()
 
     class Create:
         def __init__(self, app):
@@ -58,8 +64,12 @@ class App:
             self.app.widgets[id] = dropdown
             return id
 
-    def getwid(self, id):
-        return self.widgets.get(id)
-
-    def run(self):
-        self.root.mainloop()
+        def checkbox(self, text="", id=None, **options):
+            if id is None:
+                id = self._generate_id('C')
+            var = tk.BooleanVar(self.app.root)
+            checkbox = tk.Checkbutton(self.app.root, text=text, variable=var, **options)
+            checkbox.pack()
+            self.app.widgets[id] = checkbox
+            self.app.widgets[f"{id}_var"] = var
+            return id
