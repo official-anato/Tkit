@@ -2,6 +2,22 @@ import tkinter as tk
 from collections import defaultdict
 from string import ascii_uppercase
 
+class ListBoxWrapper:
+    def __init__(self, listbox):
+        self.listbox = listbox
+
+    def insert(self, item):
+        self.listbox.insert(tk.END, item)
+
+    def delete(self, index):
+        self.listbox.delete(index)
+
+    def bind_select(self, callback):
+        self.listbox.bind('<<ListboxSelect>>', callback)
+
+    def curselection(self):
+        return [self.listbox.get(i) for i in self.listbox.curselection()]
+
 class App:
     def __init__(self, title="Untitled Window", x=130, y=130):
         self.root = tk.Tk()
@@ -96,7 +112,7 @@ class App:
             listbox = tk.Listbox(self.app.root, **options)
             listbox.pack()
             self.app.widgets[id] = listbox
-            return id
+            return ListBoxWrapper(listbox)
 
         def menubutton(self, text="Untitled Menubutton", id=None, **options):
             if id is None:
