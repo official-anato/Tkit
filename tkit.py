@@ -217,3 +217,60 @@ class App:
             self._pack_widget(treeview, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = treeview
             return id
+
+        def separator(self, parent_menu_id, id=None, **options):
+            if id is None:
+                id = self._generate_id('SEP')
+            parent_menu = self.app.widgets.get(parent_menu_id)
+            if parent_menu is None:
+                raise ValueError(f"Parent menu with id '{parent_menu_id}' not found.")
+            separator = parent_menu.add_separator(**options)
+            self.app.widgets[id] = separator
+            return id
+
+        def menu_item(self, parent_menu_id, label=None, command=None, id=None, **options):
+            if id is None:
+                id = self._generate_id('MI')
+            parent_menu = self.app.widgets.get(parent_menu_id)
+            if parent_menu is None:
+                raise ValueError(f"Parent menu with id '{parent_menu_id}' not found.")
+            menu_item = parent_menu.add_command(label=label, command=command, **options)
+            self.app.widgets[id] = menu_item
+            return id
+
+        def submenu(self, parent_menu_id, label=None, id=None, **options):
+            if id is None:
+                id = self._generate_id('SM')
+            parent_menu = self.app.widgets.get(parent_menu_id)
+            if parent_menu is None:
+                raise ValueError(f"Parent menu with id '{parent_menu_id}' not found.")
+            submenu = tk.Menu(parent_menu, **options)
+            parent_menu.add_cascade(label=label, menu=submenu)
+            self.app.widgets[id] = submenu
+            return id
+
+        def menu(self, id=None, **options):
+            if id is None:
+                id = self._generate_id('M')
+            menu = tk.Menu(self.app.root, **options)
+            self.app.root.config(menu=menu)
+            self.app.widgets[id] = menu
+            return id
+
+        def frame(self, id=None, pack_method=None, **options):
+            if id is None:
+                id = self._generate_id('F')
+            frame = tk.Frame(self.app.root, **options)
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(frame, pack_method, **options.get('pack_options', {}))
+            self.app.widgets[id] = frame
+            return id
+
+        def canvas(self, id=None, pack_method=None, **options):
+            if id is None:
+                id = self._generate_id('C')
+            canvas = tk.Canvas(self.app.root, **options)
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(canvas, pack_method, **options.get('pack_options', {}))
+            self.app.widgets[id] = canvas
+            return id
