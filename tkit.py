@@ -274,3 +274,47 @@ class App:
             self._pack_widget(canvas, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = canvas
             return id
+
+        def labelframe(self, text="Untitled LabelFrame", id=None, pack_method=None, **options):
+            if id is None:
+                id = self._generate_id('LF')
+            labelframe = tk.LabelFrame(self.app.root, text=text, **options)
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(labelframe, pack_method, **options.get('pack_options', {}))
+            self.app.widgets[id] = labelframe
+            return id
+
+        def scrollbar(self, orient=tk.VERTICAL, id=None, pack_method=None, **options):
+            if id is None:
+                id = self._generate_id('SB')
+            scrollbar = tk.Scrollbar(self.app.root, orient=orient, **options)
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(scrollbar, pack_method, **options.get('pack_options', {}))
+            self.app.widgets[id] = scrollbar
+            return id
+
+        def combobox(self, values=None, id=None, pack_method=None, **options):
+            if id is None:
+                id = self._generate_id('CB')
+            combobox = ttk.Combobox(self.app.root, values=values, **options)
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(combobox, pack_method, **options.get('pack_options', {}))
+            self.app.widgets[id] = combobox
+            return id
+
+        def toplevel(self, title="Untitled Toplevel", id=None, **options):
+            if id is None:
+                id = self._generate_id('TL')
+            toplevel = tk.Toplevel(self.app.root, **options)
+            toplevel.title(title)
+            self.app.widgets[id] = toplevel
+            return id
+
+        def panedwindow(self, orient=tk.HORIZONTAL, id=None, pack_method=None, **options):
+            if id is None:
+                id = self._generate_id('PW')
+            panedwindow = tk.PanedWindow(self.app.root, orient=orient, **options)
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(panedwindow, pack_method, **options.get('pack_options', {}))
+            self.app.widgets[id] = panedwindow
+            return id
