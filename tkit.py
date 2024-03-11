@@ -20,6 +20,50 @@ class App:
     def run(self):
         self.root.mainloop()
 
+    def set_widget_value(self, id, value):
+        widget = self.widgets.get(id)
+        if isinstance(widget, tk.Entry):
+            widget.delete(0, tk.END)
+            widget.insert(0, value)
+        elif isinstance(widget, tk.Text):
+            widget.delete('1.0', tk.END)
+            widget.insert('1.0', value)
+        elif isinstance(widget, ttk.Progressbar):
+            widget['value'] = value
+        elif isinstance(widget, tk.Scale):
+            widget.set(value)
+        elif isinstance(widget, tk.Spinbox):
+            widget.delete(0, tk.END)
+            widget.insert(0, value)
+        elif isinstance(widget, tk.Listbox):
+            widget.selection_clear(0, tk.END)
+            widget.selection_set(value)
+        elif isinstance(widget, tk.Checkbutton) or isinstance(widget, tk.Radiobutton):
+            var = self.widgets.get(f"{id}_var")
+            var.set(value)
+        else:
+            raise ValueError(f"Unsupported widget type: {type(widget)}")
+
+    def get_widget_value(self, id):
+        widget = self.widgets.get(id)
+        if isinstance(widget, tk.Entry) or isinstance(widget, tk.Text) or isinstance(widget, tk.Spinbox):
+            return widget.get()
+        elif isinstance(widget, ttk.Progressbar):
+            return widget['value']
+        elif isinstance(widget, tk.Scale):
+            return widget.get()
+        elif isinstance(widget, tk.Listbox):
+            selection = widget.curselection()
+            if selection:
+                return selection[0]
+            else:
+                return None
+        elif isinstance(widget, tk.Checkbutton) or isinstance(widget, tk.Radiobutton):
+            var = self.widgets.get(f"{id}_var")
+            return var.get()
+        else:
+            raise ValueError(f"Unsupported widget type: {type(widget)}")
+
     class Create:
         def __init__(self, app):
             self.app = app
@@ -79,6 +123,7 @@ class App:
             message.pack()
             self.app.widgets[id] = message
             return id
+
         def text(self, id=None, **options):
             if id is None:
                 id = self._generate_id('T')
@@ -147,47 +192,3 @@ class App:
             treeview.pack()
             self.app.widgets[id] = treeview
             return id
-
-    def set_widget_value(self, id, value):
-        widget = self.widgets.get(id)
-        if isinstance(widget, tk.Entry):
-            widget.delete(0, tk.END)
-            widget.insert(0, value)
-        elif isinstance(widget, tk.Text):
-            widget.delete('1.0', tk.END)
-            widget.insert('1.0', value)
-        elif isinstance(widget, ttk.Progressbar):
-            widget['value'] = value
-        elif isinstance(widget, tk.Scale):
-            widget.set(value)
-        elif isinstance(widget, tk.Spinbox):
-            widget.delete(0, tk.END)
-            widget.insert(0, value)
-        elif isinstance(widget, tk.Listbox):
-            widget.selection_clear(0, tk.END)
-            widget.selection_set(value)
-        elif isinstance(widget, tk.Checkbutton) or isinstance(widget, tk.Radiobutton):
-            var = self.widgets.get(f"{id}_var")
-            var.set(value)
-        else:
-            raise ValueError(f"Unsupported widget type: {type(widget)}")
-
-    def get_widget_value(self, id):
-        widget = self.widgets.get(id)
-        if isinstance(widget, tk.Entry) or isinstance(widget, tk.Text) or isinstance(widget, tk.Spinbox):
-            return widget.get()
-        elif isinstance(widget, ttk.Progressbar):
-            return widget['value']
-        elif isinstance(widget, tk.Scale):
-            return widget.get()
-        elif isinstance(widget, tk.Listbox):
-            selection = widget.curselection()
-            if selection:
-                return selection[0]
-            else:
-                return None
-        elif isinstance(widget, tk.Checkbutton) or isinstance(widget, tk.Radiobutton):
-            var = self.widgets.get(f"{id}_var")
-            return var.get()
-        else:
-            raise ValueError(f"Unsupported widget type: {type(widget)}")
