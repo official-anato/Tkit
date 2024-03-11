@@ -3,12 +3,13 @@ from tkinter import ttk
 from collections import defaultdict
 
 class App:
-    def __init__(self, title="Untitled Window", x=130, y=130):
+    def __init__(self, title="Untitled Window", x=130, y=130, default_pack_method='pack'):
         self.root = tk.Tk()
         self.root.title(title)
         self.root.geometry(f"{x}x{y}")
         self.widgets = {}
         self.widget_counters = defaultdict(int)
+        self.default_pack_method = default_pack_method
         self.create = self.Create(self)
 
     def getwidlist(self):
@@ -72,123 +73,147 @@ class App:
             self.app.widget_counters[prefix] += 1
             return f"{prefix}{self.app.widget_counters[prefix]}"
 
-        def label(self, text="Untitled Label", id=None, **options):
+        def _pack_widget(self, widget, pack_method, **pack_options):
+            if pack_method == 'pack':
+                widget.pack(**pack_options)
+            elif pack_method == 'grid':
+                widget.grid(**pack_options)
+            elif pack_method == 'place':
+                widget.place(**pack_options)
+            else:
+                raise ValueError(f"Invalid pack method: {pack_method}")
+
+        def label(self, text="Untitled Label", id=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('L')
             label = tk.Label(self.app.root, text=text, **options)
-            label.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(label, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = label
             return id
 
-        def button(self, text="Untitled Button", id=None, **options):
+        def button(self, text="Untitled Button", id=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('B')
             button = tk.Button(self.app.root, text=text, **options)
-            button.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(button, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = button
             return id
 
-        def entry(self, id=None, **options):
+        def entry(self, id=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('E')
             entry = tk.Entry(self.app.root, **options)
-            entry.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(entry, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = entry
             return id
 
-        def dropdown(self, selected_choice="", options=[], id=None, **other):
+        def dropdown(self, selected_choice="", options=[], id=None, pack_method=None, **other):
             if id is None:
                 id = self._generate_id('D')
             selected_choice = tk.StringVar(self.app.root)
             selected_choice.set(selected_choice)
             dropdown = tk.OptionMenu(self.app.root, selected_choice, *options, **other)
-            dropdown.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(dropdown, pack_method, **other.get('pack_options', {}))
             self.app.widgets[id] = dropdown
             return id
 
-        def checkbox(self, text="", id=None, **options):
+        def checkbox(self, text="", id=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('C')
             var = tk.BooleanVar(self.app.root)
             checkbox = tk.Checkbutton(self.app.root, text=text, variable=var, **options)
-            checkbox.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(checkbox, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = checkbox
             self.app.widgets[f"{id}_var"] = var
             return id
 
-        def message(self, text="Untitled Message", id=None, **options):
+        def message(self, text="Untitled Message", id=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('MSG')
             message = tk.Message(self.app.root, text=text, **options)
-            message.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(message, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = message
             return id
 
-        def text(self, id=None, **options):
+        def text(self, id=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('T')
             text_widget = tk.Text(self.app.root, **options)
-            text_widget.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(text_widget, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = text_widget
             return id
 
-        def radio_button(self, text="", value=None, variable=None, id=None, command=None, **options):
+        def radio_button(self, text="", value=None, variable=None, id=None, command=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('R')
             if variable is None:
                 variable = tk.StringVar(self.app.root)
             radio_button = tk.Radiobutton(self.app.root, text=text, value=value, variable=variable, command=command, **options)
-            radio_button.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(radio_button, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = radio_button
             self.app.widgets[f"{id}_var"] = variable
             return id
 
-        def scale(self, from_=0, to=100, orient=tk.HORIZONTAL, id=None, command=None, **options):
+        def scale(self, from_=0, to=100, orient=tk.HORIZONTAL, id=None, command=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('S')
             scale = tk.Scale(self.app.root, from_=from_, to=to, orient=orient, command=command, **options)
-            scale.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(scale, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = scale
             return id
 
-        def listbox(self, id=None, command=None, **options):
+        def listbox(self, id=None, command=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('LB')
             listbox = tk.Listbox(self.app.root, **options)
             if command is not None:
                 listbox.bind('<<ListboxSelect>>', command)
-            listbox.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(listbox, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = listbox
             return id
 
-        def spinbox(self, from_=0, to=100, id=None, command=None, **options):
+        def spinbox(self, from_=0, to=100, id=None, command=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('SB')
             spinbox = tk.Spinbox(self.app.root, from_=from_, to=to, command=command, **options)
-            spinbox.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(spinbox, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = spinbox
             return id
 
-        def progressbar(self, mode='determinate', id=None, **options):
+        def progressbar(self, mode='determinate', id=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('PB')
             progressbar = ttk.Progressbar(self.app.root, mode=mode, **options)
-            progressbar.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(progressbar, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = progressbar
             return id
 
-        def notebook(self, id=None, **options):
+        def notebook(self, id=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('NB')
             notebook = ttk.Notebook(self.app.root, **options)
-            notebook.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(notebook, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = notebook
             return id
 
-        def treeview(self, columns=None, id=None, **options):
+        def treeview(self, columns=None, id=None, pack_method=None, **options):
             if id is None:
                 id = self._generate_id('TV')
             treeview = ttk.Treeview(self.app.root, columns=columns, **options)
-            treeview.pack()
+            pack_method = pack_method or self.app.default_pack_method
+            self._pack_widget(treeview, pack_method, **options.get('pack_options', {}))
             self.app.widgets[id] = treeview
             return id
